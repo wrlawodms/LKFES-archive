@@ -16,9 +16,12 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    {% load startswith %}
   </head>
   <body>
     <h1 align="center">{{ post.title }}</h1></div>
+    <hr/>
+        {{ post.desc }}
     <hr/>
     <br/>
 {#    <div class="jumbotron" style="margin:2%">#}
@@ -114,7 +117,7 @@
             </tbody>
         </table>
 {#    </div>#}
-      <h3>Evaluation Result</h3>
+      <h4>Evaluation Result</h4>
       <ul class="nav nav-tabs">
           <li id="log_before_tab" role="presentation" class="active"><a onclick="log_change('log_before')">Before</a></li>
           <li id="log_after_tab" role="presentation"><a onclick="log_change('log_after')">After</a></li>
@@ -122,14 +125,22 @@
       </ul >
         <pre id="log_before" style="display: block;">{{ post.before_log}}</pre>
         <pre id="log_after" style="display: none;">{{ post.after_log}}</pre>
-        <pre id="log_diff" style="display: none;">
-            <h2>diff result will be displayed</h2>
-        </pre>
+        <div class="jumbotron" id="log_diff" style="display: none; padding: 10px 10px;">
+            {% for l in post.diffs %}
+                {% if l|startswith:"+" %}
+                    <div style="color:green">{{ l }}</div>
+                {% elif l|startswith:"-" %}
+                    <div style="color:red">{{ l }}</div>
+                {% else %}
+                    {{ l }}
+                {% endif %}
+            {% endfor %}
+        </div>
 
-    <div class="jumbotron" style="margin:2%">
-        <h3>resources</h3>
+    <h4>Resources</h4>
+    <div class="jumbotron" >
         {% for fname in post.files %}
-            <a href="{% url 'index' %}download/{{ post.pk }}/{{ fname }}">{{ fname }}</a>
+            <a href="{% url 'index' %}download/{{ post.pk }}/{{ fname }}">{{ fname }}</a><br/>
         {%  endfor %}
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

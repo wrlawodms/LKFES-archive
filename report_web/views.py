@@ -8,6 +8,7 @@ import os
 import json
 import math
 from django.views.decorators.csrf import csrf_exempt
+import difflib
 # Create your views here.
 
 def list(request, page=1):
@@ -37,10 +38,11 @@ def report(request, post_id):
 	with open(post_files_dir + '/after.log') as f:
 		post.after_log = f.read()
 	post.files = os.listdir(post_files_dir)
-
+	post.diffs = []
+	for l in difflib.ndiff(post.before_log.splitlines(), post.after_log.splitlines()):
+		if not l.startswith('?'):
+			post.diffs.append(l)
 	# for res in post.hw_spec:
-
-
 	context = {'post' : post}
 	return render(request, 'report_deatil.html', context)
 
