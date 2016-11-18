@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>LKFES report details</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1 align="center">{{ post.title }}</h1></div>
+    <hr/>
+    <br/>
+{#    <div class="jumbotron" style="margin:2%">#}
+        <h4 >Hardware Specs</h4>
+        <table class="table" id="tbl_hw_spec" >
+            <thead>
+                <tr>
+                    <th class="col-sm-1">Resource</th>
+                    <th class="col-sm-1">info</th>
+                    <th class="col-sm-8"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for k, v in post.hw_spec.cpu.items %}
+                {% if k == 'detail' %}
+                    <tr><td>CPU</td><td>{{ k }}</td>
+                        <td>
+                          <a data-toggle="collapse" href="#collapseCpuDeatil" aria-expanded="false" aria-controls="collapseCpuDetail">
+                             show details
+                          </a>
+                        <div class="collapse" id="collapseCpuDeatil">
+                          <div class="card card-block">
+                              <pre>{{ v }}</pre>
+                          </div>
+                        </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td>CPU</td><td>{{ k }}</td><td>{{ v }}</td></tr>
+                {% endif %}
+            {% endfor %}
+            {% for k, v in post.hw_spec.mem.items %}
+                <tr><td>MEM</td><td>{{ k }}</td><td>{{ v }}</td></tr>
+            {% endfor %}
+            {% for k, v in post.hw_spec.vga.items %}
+                <tr><td>VGA</td><td>{{ k }}</td><td>{{ v }}</td></tr>
+            {% endfor %}
+            {% for k, v in post.hw_spec.disk.items %}
+                {% if k == 'detail' %}
+                    <tr><td>DISK</td><td>{{ k }}</td>
+                        <td>
+                          <a data-toggle="collapse" href="#collapseDiskDetail" aria-expanded="false" aria-controls="collapseDiskDetail">
+                             show details
+                          </a>
+                          <div class="collapse" id="collapseDiskDetail">
+                            <div class="card card-block">
+                                <pre>{{ v }}</pre>
+                            </div>
+                          </div>
+                        </td>
+                    </tr>
+                {% elif k == 'devs'%}
+{#                        {% for dev in v %}#}
+{#                            {% for k1,v1 in dev.items %}#}
+{#                                <tr><td>DISK</td><td>dev</td><td>{{ k1 }}</td><td>{{ v1 }}</td></tr>#}
+{#                            {% endfor %}#}
+{#                        {% endfor %}#}
+                {% else %}
+                    <tr><td>DISK</td><td>{{ k }}</td><td colspan="2">{{ v }}</td></tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+        </table>
+        <h4>Software Specs</h4>
+        <ul class="nav nav-tabs">
+          <li id="sw_spec_before_tab" role="presentation" class="active"><a onclick="sw_spec_tab_change('sw_spec_before')">Before</a></li>
+          <li id="sw_spec_after_tab" role="presentation"><a onclick="sw_spec_tab_change('sw_spec_after')">After</a></li>
+        </ul>
+        <table class="table" id="sw_spec_before">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">info</th>
+                    <th class="col-sm-8"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for k,v in post.before_sw_spec.items %}
+                    <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table class="table" id="sw_spec_after" style="display: None">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">info</th>
+                    <th class="col-sm-8"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for k,v in post.after_sw_spec.items %}
+                    <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+{#    </div>#}
+      <h3>Evaluation Result</h3>
+      <ul class="nav nav-tabs">
+          <li id="log_before_tab" role="presentation" class="active"><a onclick="log_change('log_before')">Before</a></li>
+          <li id="log_after_tab" role="presentation"><a onclick="log_change('log_after')">After</a></li>
+          <li id="log_diff_tab" role="presentation"><a onclick="log_change('log_diff')">Diff</a></li>
+      </ul >
+        <pre id="log_before" style="display: block;">{{ post.before_log}}</pre>
+        <pre id="log_after" style="display: none;">{{ post.after_log}}</pre>
+        <pre id="log_diff" style="display: none;">
+            <h2>diff result will be displayed</h2>
+        </pre>
+
+    <div class="jumbotron" style="margin:2%">
+        <h3>resources</h3>
+        {% for fname in post.files %}
+            <a href="{% url 'index' %}download/{{ post.pk }}/{{ fname }}">{{ fname }}</a>
+        {%  endfor %}
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+        var pre_sw_spec = 'sw_spec_before'
+        function sw_spec_tab_change(to){
+            document.getElementById(pre_sw_spec).style.display = 'None'
+            document.getElementById(to).style.display = 'block'
+            document.getElementById(pre_sw_spec+"_tab").className = ''
+            document.getElementById(to+"_tab").className = 'active'
+            pre_sw_spec = to
+        }
+
+        var pre_log = 'log_before'
+        function log_change(to) {
+            document.getElementById(pre_log).style.display = 'none'
+            document.getElementById(to).style.display = 'block'
+            document.getElementById(pre_log+"_tab").className = ''
+            document.getElementById(to+"_tab").className = 'active'
+            pre_log = to
+
+        }
+
+        var table = document.getElementById('tbl')
+        mergeVerticalCell(tbl_hw_spec, 1, 0)
+          /**
+         * 수직방향으로 같은 값을 가진 cell 을 merge 한다.
+         *
+
+         * [IE 6.0], [FireFox 2.0]
+
+         *
+         * <입력 파라미터>
+         * - table : Table 객체
+         * - startRowIdx : 테이블의 몇 번째 row 에서부터 merge 를 수행할 지 결정하는 row's Index
+         * - cellIdx : merge 하기 위한 테이블의 cell's Index
+         *
+         * <반환값>
+         * - 없음
+         *
+         * ex) var table = document.getElementById("tbl");
+         *     mergeVerticalCell(table, 0, 0);
+         *
+         */
+        function mergeVerticalCell(table, startRowIdx, cellIdx) {
+          var rows            = table.getElementsByTagName("tr");
+          var numRows         = rows.length;
+          var numRowSpan      = 1;
+          var currentRow      = null;
+          var currentCell     = null;
+          var currentCellData = null;
+          var nextRow         = null;
+          var nextCell        = null;
+          var nextCellData    = null;
+
+          for (var i = startRowIdx; i < (numRows-1); i++) {   // i 는 row's index
+
+            // 새롭게 cell merge 를 해야하면,
+            // 현재(비교의 기준이 되는..) row, cell, data 구함
+            if (numRowSpan <= 1) {
+              currentRow      = table.getElementsByTagName('tr')[i];
+              currentCell     = currentRow.getElementsByTagName('td')[cellIdx];
+              currentCellData = currentCell.childNodes[0].data;
+            }
+
+
+            if (i < numRows-1) {  // 현재 row 가 마지막 row 가 아니면
+
+              // 다음 row, cell, data 구함
+              if (table.getElementsByTagName('tr')[i+1]) {
+                nextRow       = table.getElementsByTagName('tr')[i+1];
+                nextCell      = nextRow.getElementsByTagName('td')[cellIdx];
+                nextCellData  = nextCell.childNodes[0].data;
+
+                // 현재 cell == 다음 cell 이면, merge
+                if (currentCellData == nextCellData) {
+                  numRowSpan              += 1;
+                  currentCell.rowSpan     = numRowSpan;
+                  nextCell.style.display  = 'none';
+
+                // 현재 cell != 다음 cell 이면,
+                // 새로운 현재(비교의 기준이 되는..) cell 을 구할 수 있도록 초기화
+                } else {
+                  numRowSpan = 1;
+
+                }
+              }
+            }
+          }
+        }
+
+
+        /**
+         * 수직방향으로 같은 값을 가진 cell 을 merge 한다.
+         * 단, mergeVerticalCell() 함수를 통해서 먼저 특정 cell 들이 merge 된 이후,
+         * merge 된 cell 을 기준으로 merge 된 cell 의 범위 내에 포함되는 row 의 cell 에 대해서만 merge 한다.
+         *
+
+         * [IE 6.0], [FireFox 2.0]
+
+         *
+         * <입력 파라미터>
+         * - table : Table 객체
+         * - startRowIdx : 테이블의 몇 번째 row 에서부터 merge 를 수행할 지 결정하는 row's Index
+         * - basicCellIdx : 이미 merge 된 cell 중에서 기준이 되는 cell's index
+         * - cellIdx : merge 하기 위한 테이블의 cell's Index
+         *
+         * <반환값>
+         * - 없음
+         *
+         * ex) var table = document.getElementById("tbl");
+         *     mergeVerticalCell(table, 0, 0);
+         *     mergeDependentVerticalCell(table, 0, 0, 1);
+         *
+         */
+        function mergeDependentVerticalCell(table, startRowIdx, basicCellIdx, cellIdx) {
+          var rows                  = table.getElementsByTagName("tr");
+          var numRows               = rows.length;
+          var numRowSpan            = 1;  // 초기화
+          var countLoopInBasicMerge = 1;  // 초기화   merge 된 cell 내에서의 반복루프 처리 횟수
+          var currentRow            = null;
+          var currentCell           = null;
+          var currentCellData       = null;
+          var nextRow               = null;
+          var nextCell              = null;
+          var nextCellData          = null;
+          var basicRowSpan          = null;
+
+
+          for (var i = startRowIdx; i < (numRows-1); i++) {   // i 는 row's index
+
+
+            // 기준 rowSpan 값 설정
+            // basicCellIdx 에 해당하는 cell 의 rowSpan 값이 기준 rowSpan 범위가 됨.
+            if (i == startRowIdx || (countLoopInBasicMerge== 1 && numRowSpan == 1)) {
+              basicRowSpan  = table.getElementsByTagName('tr')[i].getElementsByTagName("td")[basicCellIdx].rowSpan;
+            }
+
+
+
+            // 새롭게 cell merge 를 해야하면,
+            // 현재(비교의 기준이 되는..) row, cell, data 구함
+            if (numRowSpan <= 1) {
+              currentRow      = table.getElementsByTagName('tr')[i];
+              currentCell     = currentRow.getElementsByTagName('td')[cellIdx];
+              currentCellData = currentCell.childNodes[0].data;
+            }
+
+
+            if (i < numRows-1) {  // 현재 row 가 마지막 row 가 아니면
+
+              if (countLoopInBasicMerge < basicRowSpan) {  // 기준 row 의 rowSpan 값을 초과해서 merge 할 수 없음.
+                // 다음 row, cell, data 구함
+                if (table.getElementsByTagName('tr')[i+1]) {
+                  nextRow       = table.getElementsByTagName('tr')[i+1];
+                  nextCell      = nextRow.getElementsByTagName('td')[cellIdx];
+                  nextCellData  = nextCell.childNodes[0].data;
+
+                  // 현재 cell == 다음 cell 이면, merge
+                  if (currentCellData == nextCellData) {
+                    numRowSpan              += 1;
+                    currentCell.rowSpan     = numRowSpan;
+                    nextCell.style.display  = 'none';
+
+
+                  // 현재 cell != 다음 cell 이면,
+                  // 새로운 현재(비교의 기준이 되는..) cell 을 구할 수 있도록 초기화
+                  } else {
+                    numRowSpan = 1;
+
+                  }
+                }
+
+
+
+                countLoopInBasicMerge++;
+
+
+
+              // 기준 rowSpan 범위 이상이면,
+              // 새로운 rowSpan 을 설정할 수 있도록 값을 초기화
+
+              } else {
+                countLoopInBasicMerge = 1;
+                numRowSpan = 1;
+
+          }
+        }
+      }
+    }
+    </script>
+  </body>
+</html>
+
