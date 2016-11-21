@@ -21,7 +21,7 @@
   <body>
     <h1 align="center">{{ post.title }}</h1></div>
     <hr/>
-        {{ post.desc }}
+        <div style="text-align: center">{{ post.desc }}</div>
     <hr/>
     <br/>
 {#    <div class="jumbotron" style="margin:2%">#}
@@ -125,17 +125,7 @@
       </ul >
         <pre id="log_before" style="display: block;">{{ post.before_log}}</pre>
         <pre id="log_after" style="display: none;">{{ post.after_log}}</pre>
-        <div class="jumbotron" id="log_diff" style="display: none; padding: 10px 10px;">
-            {% for l in post.diffs %}
-                {% if l|startswith:"+" %}
-                    <div style="color:green">{{ l }}</div>
-                {% elif l|startswith:"-" %}
-                    <div style="color:red">{{ l }}</div>
-                {% else %}
-                    {{ l }}
-                {% endif %}
-            {% endfor %}
-        </div>
+        <pre id="log_diff" style="display: none;">{% for l in post.diffs %}{% if l|startswith:"+" %}<div style="color:green">{{ l }}</div>{% elif l|startswith:"-" %}<div style="color:red">{{ l }}</div>{% else %}{{ l }}{% endif %}{% endfor %}</pre>
 
     <h4>Resources</h4>
     <div class="jumbotron" >
